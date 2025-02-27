@@ -8,6 +8,7 @@ pygame.mixer.init()
 channel = pygame.mixer.find_channel()
 eat_sound = pygame.mixer.Sound("assets/eating_apple.mp3")
 eat_sound.set_volume(0.7)
+death_sound = pygame.mixer.Sound("assets/ugly-plankton.mp3")
 bg_sound = pygame.mixer.Sound("assets/background_music.mp3")
 bg_sound.set_volume(0.1)
 bg_sound.play(-1)
@@ -274,6 +275,7 @@ def grow():
 
 def restart_game():
     global snake, score, speed, key_press_count, ok_to_go, direction, apple_color, difficulty, snake_length, highscore
+    death_sound.play()
     save_highscore()
     bg_sound.stop()
     bg_sound.play(-1)
