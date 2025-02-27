@@ -15,6 +15,7 @@ bg_sound.play(-1)
 
 running = True
 restart = False
+loop = 0
 SCREEN_WIDTH, SCREEN_HEIGHT = 800, 580
 GRID_SIZE = 20
 CELL_SIZE = 25
@@ -27,6 +28,7 @@ BLUE = (0, 0, 255)
 PURPLE = (204, 0, 204)
 YELLOW = (230, 230, 0)
 
+sound_play = True
 status = None
 key_press_count = 0
 ok_to_go = False
@@ -274,11 +276,13 @@ def grow():
 
 
 def restart_game():
-    global snake, score, speed, key_press_count, ok_to_go, direction, apple_color, difficulty, snake_length, highscore
+    global snake, score, speed, key_press_count, ok_to_go, direction, apple_color, difficulty, snake_length, highscore, \
+        loop, sound_play
+    loop += 1
     death_sound.play()
     save_highscore()
     bg_sound.stop()
-    bg_sound.play(-1)
+    sound_play = False
     highscore = load_highscore()
     snake = [[10, 10], [10, 9], [10, 8]]
     score = 0
@@ -348,13 +352,22 @@ while running:
         update_stats()
         draw_grid()
         draw_snake()
-        draw_apple()
-        grow()
         if ok_to_go:
+            death_sound.stop()
+            if not sound_play:
+                bg_sound.play(-1)
+                sound_play = True
+            draw_apple()
+            grow()
             move_snake_regularly(direction)
         else:
             start_text = paused_font.render("Press any ASWD", True, (255, 128, 0))
             tab_text = paused_font.render("'TAB' to pause", True, (255, 128, 0))
+
+            if loop != 0:
+                game_over_img = pygame.image.load("assets/plankton.jpg")
+                screen.blit(game_over_img, (120, 100))
+
             screen.blit(start_text, (130, GAME_HEIGHT / 2 - 50))
             screen.blit(tab_text, (150, GAME_HEIGHT / 2))
     else:
